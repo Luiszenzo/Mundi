@@ -10,7 +10,7 @@ import AdminPanel from "./components/AdminPanel";
 import { db } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-const ADMIN_EMAILS = ["luiszenzo2@gmail.com"];
+const ADMIN_EMAILS = ["luiszenzo2@gmail.com", "enrirountree@gmail.com"];
 
 export default function App() {
   const { user, loading } = useAuth();
