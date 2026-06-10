@@ -1,15 +1,12 @@
 import { useState, useEffect } from "react";
 import { auth, googleProvider } from "../firebase";
-import { signInWithRedirect, signOut, onAuthStateChanged, getRedirectResult } from "firebase/auth";
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 
 export function useAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Catch the redirect result specifically for mobile browsers
-    getRedirectResult(auth).catch(console.error);
-
     const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
       setLoading(false);
@@ -17,7 +14,17 @@ export function useAuth() {
     return unsub;
   }, []);
 
-  const loginWithGoogle = () => signInWithRedirect(auth, googleProvider);
+  const loginWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      if (error.code === 'auth/popup-closed-by-user') {
+        console.log("El usuario cerró la ventana emergente.");
+      } else {
+        console.error("Error en login:", error);
+      }
+    }
+  };
   const logout = () => signOut(auth);
 
   return { user, loading, loginWithGoogle, logout };
