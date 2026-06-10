@@ -14,17 +14,7 @@ export function useAuth() {
     return unsub;
   }, []);
 
-  const loginWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      if (error.code === 'auth/popup-closed-by-user') {
-        console.log("El usuario cerró la ventana emergente.");
-      } else {
-        console.error("Error en login:", error);
-      }
-    }
-  };
+  const loginWithGoogle = () => signInWithPopup(auth, googleProvider);
   const logout = () => signOut(auth);
 
   return { user, loading, loginWithGoogle, logout };
