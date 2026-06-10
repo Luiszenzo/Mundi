@@ -79,6 +79,25 @@ export default function QuinielaForm() {
     }));
   }, []);
 
+  const handleRandomize = () => {
+    if (isLocked) return;
+    if (!window.confirm("¿Llenar al azar los partidos que te faltan? (Puedes modificarlos después antes de guardar)")) return;
+    
+    const newPredictions = { ...predictions };
+    MATCHES.forEach(m => {
+      if (isMatchStarted(m)) return;
+      const current = newPredictions[m.id] || {};
+      if (current.homeScore === undefined || current.homeScore === "") {
+        newPredictions[m.id] = {
+          ...current,
+          homeScore: Math.floor(Math.random() * 4),
+          awayScore: Math.floor(Math.random() * 4),
+        };
+      }
+    });
+    setPredictions(newPredictions);
+  };
+
   const groupMatches = MATCHES.filter(m => m.group === activeGroup);
 
   const totalFilled = MATCHES.filter(m => {
@@ -138,9 +157,20 @@ export default function QuinielaForm() {
             </div>
           )}
           {!isPastDeadline && !savedPredictions && (
-            <div className="deadline-banner">
-              ⏰ Cierre definitivo: 17 Jun 2026. Los partidos que ya hayan iniciado se bloquearán y no sumarán puntos.
-            </div>
+            <>
+              <div className="deadline-banner">
+                ⏰ Cierre definitivo: 17 Jun 2026. Los partidos que ya hayan iniciado se bloquearán y no sumarán puntos.
+              </div>
+              <div style={{ marginTop: "1rem" }}>
+                <button 
+                  className="btn" 
+                  style={{ background: "var(--card-bg)", color: "var(--text)", border: "1px solid var(--border)", padding: "0.5rem 1rem", fontSize: "0.9rem" }}
+                  onClick={handleRandomize}
+                >
+                  🎲 Llenar al azar
+                </button>
+              </div>
+            </>
           )}
         </div>
 
