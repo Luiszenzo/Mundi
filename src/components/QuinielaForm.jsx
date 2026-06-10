@@ -50,6 +50,11 @@ export default function QuinielaForm() {
   const isPastDeadline = new Date() > DEADLINE;
   const isLocked = savedPredictions !== null || isPastDeadline;
 
+  // Helper to check if a specific match has started (using Mexico City timezone)
+  const isMatchStarted = useCallback((match) => {
+    return new Date() > new Date(`${match.date}T${match.time}:00-06:00`);
+  }, []);
+
   const showToast = (msg, type = "success") => {
     setToast({ msg, type, show: true });
     setTimeout(() => setToast(t => ({ ...t, show: false })), 3000);
@@ -84,6 +89,7 @@ export default function QuinielaForm() {
   const handleSave = async () => {
     if (isLocked) return;
     const missing = MATCHES.filter(m => {
+      if (isMatchStarted(m)) return false; // Don't require past matches
       const p = predictions[m.id];
       return !p || p.homeScore === "" || p.homeScore === undefined || p.awayScore === "" || p.awayScore === undefined;
     });
@@ -128,12 +134,12 @@ export default function QuinielaForm() {
           <p className="hero-sub">Predice los 72 partidos de la fase de grupos</p>
           {isPastDeadline && (
             <div className="deadline-banner">
-              🔒 Quinielas cerradas — El torneo ya comenzó
+              🔒 Quinielas cerradas — Fecha límite alcanzada
             </div>
           )}
           {!isPastDeadline && !savedPredictions && (
             <div className="deadline-banner">
-              ⏰ Cierre: 11 Jun 2026 antes del partido inaugural
+              ⏰ Cierre definitivo: 17 Jun 2026. Los partidos que ya hayan iniciado se bloquearán y no sumarán puntos.
             </div>
           )}
         </div>
@@ -190,8 +196,9 @@ export default function QuinielaForm() {
           {groupMatches.map(match => {
             const { home, away, homeFlag, awayFlag } = getMatchTeams(match);
             const pred = displayPredictions[match.id] || {};
-            const dateObj = new Date(match.date + "T" + match.time);
+            const dateObj = new Date(match.date + "T" + match.time + ":00-06:00");
             const dateStr = dateObj.toLocaleDateString("es-MX", { day:"numeric", month:"short" });
+            const matchLocked = isLocked || (!savedPredictions && isMatchStarted(match));
 
             return (
               <div key={match.id} className="match-row">
@@ -206,7 +213,7 @@ export default function QuinielaForm() {
                     className={`score-input${pred.homeScore !== undefined && pred.homeScore !== "" ? " filled" : ""}`}
                     value={pred.homeScore ?? ""}
                     onChange={e => handleScore(match.id, "homeScore", e.target.value)}
-                    disabled={isLocked}
+                    disabled={matchLocked}
                     placeholder="–"
                   />
                   <span className="score-sep">:</span>
@@ -217,14 +224,16 @@ export default function QuinielaForm() {
                     className={`score-input${pred.awayScore !== undefined && pred.awayScore !== "" ? " filled" : ""}`}
                     value={pred.awayScore ?? ""}
                     onChange={e => handleScore(match.id, "awayScore", e.target.value)}
-                    disabled={isLocked}
+                    disabled={matchLocked}
                     placeholder="–"
                   />
                 </div>
 
                 <span className="team-name away">{away}</span>
                 <span className="match-flag">{awayFlag}</span>
-                <span className="match-date-tag">{dateStr}</span>
+                <span className="match-date-tag">
+                  {(!savedPredictions && isMatchStarted(match)) ? "Cerrado" : dateStr}
+                </span>
               </div>
             );
           })}

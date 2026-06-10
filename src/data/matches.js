@@ -117,7 +117,7 @@ export const MATCHES = [
   { id: "L6", group: "L", home: 1, away: 2, matchday: 3, date: "2026-06-26", time: "16:00" },
 ];
 
-export const DEADLINE = new Date("2026-06-11T17:00:00-06:00"); // Before first match
+export const DEADLINE = new Date("2026-06-17T23:59:59-06:00"); // June 17 deadline
 
 export function getMatchTeams(match) {
   const group = GROUPS[match.group];
