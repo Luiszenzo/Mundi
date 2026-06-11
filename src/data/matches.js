@@ -8,12 +8,12 @@ export const GROUPS = {
   C: { teams: ["Brasil", "Marruecos", "Haití", "Escocia"], flag: ["🇧🇷", "🇲🇦", "🇭🇹", "🏴󠁧󠁢󠁳󠁣󠁴󠁿"] },
   D: { teams: ["EUA", "Paraguay", "Australia", "Türkiye"], flag: ["🇺🇸", "🇵🇾", "🇦🇺", "🇹🇷"] },
   E: { teams: ["Alemania", "Curazao", "Costa de Marfil", "Ecuador"], flag: ["🇩🇪", "🇨🇼", "🇨🇮", "🇪🇨"] },
-  F: { teams: ["Países Bajos", "Japón", "Azerbaiyán", "Túnez"], flag: ["🇳🇱", "🇯🇵", "🇦🇿", "🇹🇳"] },
+  F: { teams: ["Países Bajos", "Japón", "Suecia", "Túnez"], flag: ["🇳🇱", "🇯🇵", "🇸🇪", "🇹🇳"] },
   G: { teams: ["Bélgica", "Egipto", "Irán", "Nueva Zelanda"], flag: ["🇧🇪", "🇪🇬", "🇮🇷", "🇳🇿"] },
   H: { teams: ["España", "Cabo Verde", "Arabia Saudita", "Uruguay"], flag: ["🇪🇸", "🇨🇻", "🇸🇦", "🇺🇾"] },
-  I: { teams: ["Francia", "Senegal", "Venezuela", "Noruega"], flag: ["🇫🇷", "🇸🇳", "🇻🇪", "🇳🇴"] },
+  I: { teams: ["Francia", "Senegal", "Irak", "Noruega"], flag: ["🇫🇷", "🇸🇳", "🇮🇶", "🇳🇴"] },
   J: { teams: ["Argentina", "Argelia", "Austria", "Jordania"], flag: ["🇦🇷", "🇩🇿", "🇦🇹", "🇯🇴"] },
-  K: { teams: ["Portugal", "Indonesia", "Uzbekistán", "Colombia"], flag: ["🇵🇹", "🇮🇩", "🇺🇿", "🇨🇴"] },
+  K: { teams: ["Portugal", "República del Congo", "Uzbekistán", "Colombia"], flag: ["🇵🇹", "🇨🇬", "🇺🇿", "🇨🇴"] },
   L: { teams: ["Inglaterra", "Croacia", "Ghana", "Panamá"], flag: ["🏴󠁧󠁢󠁥󠁮󠁧󠁿", "🇭🇷", "🇬🇭", "🇵🇦"] },
 };
 

@@ -106,7 +106,6 @@ h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); }
   height: 40px;
   width: 40px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
   transition: var(--transition);
 }
 .logo-area:hover .logo-img { filter: drop-shadow(0 0 8px var(--gold)); }
@@ -319,7 +318,6 @@ h3 { font-size: clamp(1.1rem, 2vw, 1.5rem); }
 .login-logo {
   height: 80px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
   margin-bottom: 1rem;
 }
 .login-logo-name {

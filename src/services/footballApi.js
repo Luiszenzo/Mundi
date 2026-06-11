@@ -45,6 +45,7 @@ const TEAM_NAME_MAP = {
   "Netherlands":      "Países Bajos",
   "Japan":            "Japón",
   "Azerbaijan":       "Azerbaiyán",
+  "Sweden":           "Suecia",
   "Tunisia":          "Túnez",
 
   // Group G
@@ -63,6 +64,7 @@ const TEAM_NAME_MAP = {
   "France":           "Francia",
   "Senegal":          "Senegal",
   "Venezuela":        "Venezuela",
+  "Iraq":             "Irak",
   "Norway":           "Noruega",
 
   // Group J
@@ -74,6 +76,12 @@ const TEAM_NAME_MAP = {
   // Group K
   "Portugal":         "Portugal",
   "Indonesia":        "Indonesia",
+  "Congo":            "República del Congo",
+  "Congo DR":         "República del Congo",
+  "Congo Republic":   "República del Congo",
+  "Republic of the Congo": "República del Congo",
+  "Democratic Republic of the Congo": "República del Congo",
+  "DR Congo":         "República del Congo",
   "Uzbekistan":       "Uzbekistán",
   "Colombia":         "Colombia",
 
