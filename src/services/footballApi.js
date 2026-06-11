@@ -121,23 +121,34 @@ export async function fetchWorldCupResults(apiKey, MATCHES, GROUPS) {
   const endpoint = "competitions/WC/matches?stage=GROUP_STAGE";
 
   let url;
-  let options = {};
+  let options = {
+    headers: {
+      "X-Auth-Token": apiKey,
+    },
+  };
 
   if (import.meta.env.DEV) {
     url = `/api/fd/${endpoint}`;
-    options = {
-      headers: {
-        "X-Auth-Token": apiKey,
-      },
-    };
   } else {
-    // In production, use corsproxy.io with query parameters to pass the header
-    // This makes it a simple GET request without custom headers, completely avoiding preflight OPTIONS requests!
-    const targetUrl = `https://api.football-data.org/v4/${endpoint}`;
-    url = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}&reqHeaders=X-Auth-Token:${encodeURIComponent(apiKey)}`;
+    // Use cors-anywhere demo proxy in production
+    url = `https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/${endpoint}`;
   }
 
-  const res = await fetch(url, options);
+  let res;
+  try {
+    res = await fetch(url, options);
+  } catch (err) {
+    if (!import.meta.env.DEV) {
+      throw new Error("CORS_DEMO_REQUIRED");
+    }
+    throw err;
+  }
+
+  // If the proxy redirects to /corsdemo or returns an HTML warning page
+  const contentType = res.headers.get("content-type") || "";
+  if (res.status === 303 || res.status === 302 || contentType.includes("text/html")) {
+    throw new Error("CORS_DEMO_REQUIRED");
+  }
 
   if (!res.ok) {
     if (res.status === 403) throw new Error("API key inválida o sin permisos para el Mundial.");

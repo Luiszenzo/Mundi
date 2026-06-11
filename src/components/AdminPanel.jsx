@@ -23,6 +23,7 @@ export default function AdminPanel() {
   const [activeGroup, setActiveGroup] = useState("A");
   const [apiKey, setApiKey]           = useState(loadApiKey);
   const [showKeyInput, setShowKeyInput] = useState(false); // hidden by default since key is pre-configured
+  const [showCorsBanner, setShowCorsBanner] = useState(false);
 
   // Load existing results from Firestore
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function AdminPanel() {
     setSyncing(true);
     setStatus("🔄 Consultando football-data.org...");
     setStatusType("");
+    setShowCorsBanner(false);
     try {
       const fetched = await fetchWorldCupResults(apiKey.trim(), MATCHES, GROUPS);
       const count = Object.keys(fetched).length;
@@ -52,7 +54,12 @@ export default function AdminPanel() {
         setOk(`✅ ${count} resultado${count !== 1 ? "s" : ""} importado${count !== 1 ? "s" : ""} desde la API`);
       }
     } catch (e) {
-      setErr(`❌ ${e.message}`);
+      if (e.message === "CORS_DEMO_REQUIRED") {
+        setShowCorsBanner(true);
+        setErr("⚠️ Se requiere activación del proxy CORS.");
+      } else {
+        setErr(`❌ ${e.message}`);
+      }
     }
     setSyncing(false);
   };
@@ -97,13 +104,13 @@ export default function AdminPanel() {
     setRecalculating(false);
   };
 
-  // ── Sync + Save + Recalc in one click ────────────────────────────────────
   const handleSyncAll = async () => {
     if (!apiKey.trim()) { setErr("⚠️ Ingresa tu API key primero"); setShowKeyInput(true); return; }
     saveApiKey(apiKey.trim());
     setSyncing(true);
     setStatus("🔄 Importando resultados...");
     setStatusType("");
+    setShowCorsBanner(false);
     try {
       const fetched = await fetchWorldCupResults(apiKey.trim(), MATCHES, GROUPS);
       const merged = { ...results, ...fetched };
@@ -136,7 +143,12 @@ export default function AdminPanel() {
       const finishedCount = Object.keys(fetched).length;
       setOk(`✅ ${finishedCount} resultado${finishedCount !== 1 ? "s" : ""} importados · ${count} quiniela${count !== 1 ? "s" : ""} actualizadas`);
     } catch (e) {
-      setErr(`❌ ${e.message}`);
+      if (e.message === "CORS_DEMO_REQUIRED") {
+        setShowCorsBanner(true);
+        setErr("⚠️ Se requiere activación del proxy CORS.");
+      } else {
+        setErr(`❌ ${e.message}`);
+      }
     }
     setSyncing(false);
   };
@@ -154,6 +166,47 @@ export default function AdminPanel() {
           <h1 className="hero-title">Resultados<br />Oficiales</h1>
           <p className="hero-sub">Importa automáticamente desde football-data.org</p>
         </div>
+
+        {/* CORS Demo Activation Banner */}
+        {showCorsBanner && (
+          <div className="card" style={{
+            border: "1px dashed var(--gold)",
+            background: "rgba(218, 165, 32, 0.12)",
+            padding: "1.25rem",
+            marginBottom: "1.5rem",
+            borderRadius: "8px",
+            lineHeight: "1.5"
+          }}>
+            <h4 style={{color: "var(--gold)", marginBottom: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem"}}>
+              ⚠️ Se requiere activar el acceso al proxy
+            </h4>
+            <p style={{fontSize: "0.85rem", color: "var(--text)", marginBottom: "1rem"}}>
+              Para sincronizar los resultados oficiales en producción, necesitas habilitar el acceso temporal de nuestro proxy gratuito de respaldo (solo toma un click).
+            </p>
+            <div style={{display: "flex", gap: "0.75rem", flexWrap: "wrap"}}>
+              <a
+                href="https://cors-anywhere.herokuapp.com/corsdemo"
+                target="_blank"
+                rel="noreferrer"
+                className="btn btn-gold"
+                style={{fontSize: "0.82rem", padding: "0.5rem 1rem", textDecoration: "none", display: "inline-flex", alignItems: "center"}}
+                onClick={() => {
+                  setShowCorsBanner(false);
+                  setOk("Acceso abierto. ¡Haz clic en el botón de Sync ahora!");
+                }}
+              >
+                1. Activar Acceso Temporal ↗
+              </a>
+              <button
+                className="btn btn-outline"
+                style={{fontSize: "0.82rem", padding: "0.5rem 1rem"}}
+                onClick={handleSyncAll}
+              >
+                2. Reintentar Sincronización
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* API Key section */}
         <div className="card" style={{marginBottom:"1.5rem"}}>
