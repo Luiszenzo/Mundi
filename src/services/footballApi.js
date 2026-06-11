@@ -118,21 +118,26 @@ export function buildMatchLookup(MATCHES, GROUPS) {
  * In production: calls the API directly (CORS allowed on real domains).
  */
 export async function fetchWorldCupResults(apiKey, MATCHES, GROUPS) {
-  const WC_COMPETITION = "WC";
+  const endpoint = "competitions/WC/matches?stage=GROUP_STAGE";
 
-  // Use proxy in dev (localhost), corsproxy.io in production
-  const baseUrl = import.meta.env.DEV
-    ? "/api/fd"
-    : "https://corsproxy.io/?url=https://api.football-data.org/v4";
+  let url;
+  let options = {};
 
-  const res = await fetch(
-    `${baseUrl}/competitions/${WC_COMPETITION}/matches?stage=GROUP_STAGE`,
-    {
+  if (import.meta.env.DEV) {
+    url = `/api/fd/${endpoint}`;
+    options = {
       headers: {
         "X-Auth-Token": apiKey,
       },
-    }
-  );
+    };
+  } else {
+    // In production, use corsproxy.io with query parameters to pass the header
+    // This makes it a simple GET request without custom headers, completely avoiding preflight OPTIONS requests!
+    const targetUrl = `https://api.football-data.org/v4/${endpoint}`;
+    url = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}&reqHeaders=X-Auth-Token:${encodeURIComponent(apiKey)}`;
+  }
+
+  const res = await fetch(url, options);
 
   if (!res.ok) {
     if (res.status === 403) throw new Error("API key inválida o sin permisos para el Mundial.");
