@@ -120,10 +120,10 @@ export function buildMatchLookup(MATCHES, GROUPS) {
 export async function fetchWorldCupResults(apiKey, MATCHES, GROUPS) {
   const WC_COMPETITION = "WC";
 
-  // Use proxy in dev (localhost), direct URL in production
+  // Use proxy in dev (localhost), corsproxy.io in production
   const baseUrl = import.meta.env.DEV
     ? "/api/fd"
-    : "https://api.football-data.org/v4";
+    : "https://corsproxy.io/?url=https://api.football-data.org/v4";
 
   const res = await fetch(
     `${baseUrl}/competitions/${WC_COMPETITION}/matches?stage=GROUP_STAGE`,
